@@ -70,7 +70,7 @@ def atendendo_cliente(nome_arquivo, endereco):
                     print(f"ACK inesperado ou de outro cliente, ignorando")
                     continue
 
-            except socket.timeout:
+            except (socket.timeout,  ConnectionResetError):
                 tentativas += 1
                 print(f"Timeout no bloco {num_seq}, tentativa {tentativas}/{MAX_TENTATIVAS}")
 
@@ -89,6 +89,7 @@ def atendendo_cliente(nome_arquivo, endereco):
         sock_cliente.sendto(final, endereco)
     
     print(f"Arquivo enviado em {num_seq} blocos")
+    sock_cliente.close()
 
 while(True):
     dado, endereco = sock.recvfrom(2048)

@@ -44,7 +44,7 @@ while recebendo:
     try:
         pacote, origem = sock.recvfrom(2048)
         tentativas = 0
-    except socket.timeout:
+    except (socket.timeout,  ConnectionResetError):
         tentativas += 1
         print(f"Sem resposta do servidor, tentativa {tentativas}/{MAX_TENTATIVAS}")
         if tentativas >= MAX_TENTATIVAS:
@@ -88,7 +88,11 @@ while recebendo:
     
     elif tipo == TIPO_FIM:
         recebendo = False
-        print("Fim dos dados")
+        if(len(blocos) != num_seq):
+            print("Arquivo incompleto!")
+            erro = True
+        else:
+            print("Arquivo completo!")
 
 if erro:
     print("Processo abortado")
